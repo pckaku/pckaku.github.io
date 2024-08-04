@@ -1,0 +1,141 @@
+     <meta content='noindex, noarchive' name='robots'/>
+	 <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
+	 <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.js"></script>
+	<style>	html,body{width:100vw;width:100svw;height:100vh;height:100svh;background:#000;overflow:hidden;}video{width:100vw;width:100svw;height:100vh;height:100svh;overflow:hidden}
+    #croOt {
+		background-color: #000;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 5px; /* Space between buttons */
+        position: fixed; /* Makes the element float */
+        top: 0; /* Positions at the top */
+        left: 0; /* Aligns to the left */
+        width: 100%; /* Stretches across the width of the viewport */
+        z-index: 1000; /* Ensures it stays above other elements */
+    }
+
+    #croOt .nav-item, #croOt .nav-item {
+        display: inline-block;
+    }
+
+    #croOt .nav1-link {
+        text-decoration: none;
+        color: white;
+    }
+
+    #croOt button {
+        background-color: #007bff; /* Default button color */
+        border: none;
+        color: white;
+        padding: 5px 10px; /* Padding for button size */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px; /* Font size */
+        font-weight: bold; /* Bold font */
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Smooth transition for color changes */
+    }
+
+    #croOt button:hover {
+        background-color: #0056b3; /* Hover color */
+    }
+
+    #croOt button.active {
+        background-color: #28a745; /* Active button color */
+    }
+</style>
+   <script>
+    // Disable right-click
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+function ctrlShiftKey(e, keyCode) {
+  return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
+}
+
+document.onkeydown = (e) => {
+  // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
+  if (
+    event.keyCode === 123 ||
+    ctrlShiftKey(e, 'I') ||
+    ctrlShiftKey(e, 'J') ||
+    ctrlShiftKey(e, 'C') ||
+    (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
+  )
+    return false;
+};
+     </script>
+
+<ul id="croOt" class="croOt">
+   <li class="nav-item"> <button>
+      <a class="channel nav1-link" data-value="https://lebo.huminbird.cn/live/ballbar_15890.m3u8" data-fallback="https://pckaku.github.io/suka4.m3u8" href="javascript:void(0);">COURT1</a></button>
+   </li>
+   <li class="nav-item"><button>
+      <a class="channel nav1-link" data-value="https://d25tgymtnqzu8s.cloudfront.net/smil:okey/manifest.mpd" data-fallback="https://pckaku.github.io/suka4.m3u8" href="javascript:void(0);">COURT2</a></button>
+   </li>
+   <li class="nav-item"><button>
+      <a class="channel nav1-link" data-value="https://d25tgymtnqzu8s.cloudfront.net/smil:sukan/manifest.mpd" data-fallback="https://pckaku.github.io/suka4.m3u8" href="javascript:void(0);">COURT3</a></button>
+   </li>  
+    
+</ul>
+
+
+   <div style="aspect-ratio: 16/9">
+      <div id="player" style="width: 100%; height: 100%;"></div>
+   </div>
+
+
+<script>
+   var player = new Clappr.Player({
+       source: "https://lebo.huminbird.cn/live/ballbar_15890.m3u8", // Default source
+       plugins: { playback: [DashShakaPlayback] },
+       parentId: "#player",
+       width: "100%",
+       height: "100%",
+       autoPlay: true,
+       poster: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyIUfEP1JIK-kyWbo1Q_OhK8YVcugG00JT7PrzExn8bSZ2dPS7qQeKQcA_-9oz_TUJZRJkl_jKTjBGBqvTT_NaFqfZ6ffSOmQHfKEvqofYlY9OixKzearZzMiAAo5nWT6qGQ-hGnB_8Y9nIrGy5AmDdt8PFyaGF4mOhK5jt0RIHf96tPNXx04dyl3R8Xs/s920/bwfpost.webp"
+   });
+
+   var fallbackSource = "https://pckaku.github.io/suka4.m3u8"; // Fallback source
+  
+   player.on(Clappr.Events.PLAYER_ERROR, function() {
+       // If there's an error, load the fallback source
+       player.load(fallbackSource);
+   });
+
+   document.querySelectorAll('.channel').forEach(function (channel) {
+       channel.addEventListener('click', function () {
+           var source = this.getAttribute('data-value');
+           var fallback = this.getAttribute('data-fallback');
+           player.load(source);
+
+           player.once(Clappr.Events.PLAYER_ERROR, function() {
+               // If there's an error, load the fallback source
+               player.load(fallback);
+           });
+       });
+   });
+
+   function onFullScreenChange() {
+       if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+           // Entering fullscreen mode
+           if (screen.orientation && screen.orientation.lock) {
+               screen.orientation.lock('landscape');
+           }
+       } else {
+           // Exiting fullscreen mode
+           if (screen.orientation && screen.orientation.unlock) {
+               screen.orientation.unlock();
+           }
+       }
+   }
+
+   document.addEventListener('fullscreenchange', onFullScreenChange);
+   document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+   document.addEventListener('mozfullscreenchange', onFullScreenChange);
+   document.addEventListener('MSFullscreenChange', onFullScreenChange);
+</script>
+
